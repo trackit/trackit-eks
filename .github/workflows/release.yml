@@ -3,7 +3,7 @@ name: Github release
 on:
   push:
     branches:
-      - master
+      - main
   workflow_call:
     secrets:
       github-token:
