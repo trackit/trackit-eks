@@ -1,0 +1,64 @@
+name: Github release
+
+on:
+  push:
+    branches:
+      - master
+  workflow_call:
+    secrets:
+      github-token:
+        required: true
+
+jobs:
+  github-release:
+    name: Github release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.2
+
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 18
+
+      - name: Semantic Release
+        uses: codfish/semantic-release-action@07170c8b1613177f0f3aa4d2224e2e0933cd732c
+        id: semantic # Need an `id` for output variables
+        with:
+          repository-url: ${{ github.server_url }}/${{ github.repository }}
+          additional-packages: |
+            [
+              "conventional-changelog-conventionalcommits@7"
+            ]
+          plugins: |
+            [
+              "@semantic-release/commit-analyzer",
+              [
+                "@semantic-release/release-notes-generator",
+                {
+                  "preset": "conventionalcommits",
+                  "presetConfig": {
+                    "types": [
+                      { type: 'feat', section: 'Features', hidden: false },
+                      { type: 'fix', section: 'Bug Fixes', hidden: false },
+                      { type: 'perf', section: 'Performance Improvements', hidden: false },
+                      { type: 'revert', section: 'Reverts', hidden: false },
+                      { type: 'docs', section: 'Other Updates', hidden: false },
+                      { type: 'style', section: 'Other Updates', hidden: false },
+                      { type: 'chore', section: 'Other Updates', hidden: false },
+                      { type: 'refactor', section: 'Other Updates', hidden: false },
+                      { type: 'test', section: 'Other Updates', hidden: false },
+                      { type: 'build', section: 'Other Updates', hidden: false },
+                      { type: 'ci', section: 'Other Updates', hidden: false }
+                    ]
+                  }
+                }
+              ],
+              "@semantic-release/github"
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    outputs:
+      release_version: ${{ steps.semantic.outputs.release-version }}
+      release_published: ${{ steps.semantic.outputs.new-release-published }}
