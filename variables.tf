@@ -140,10 +140,6 @@ variable "fargate" {
   default     = {}
 }
 
-
-
-
-
 variable "tags" {
   description = "Tags"
   type        = map(string)
@@ -156,4 +152,22 @@ variable "node_security_group_tags" {
   description = "Tags for the node security group"
   type        = map(string)
   default     = {}
+}
+
+variable "node_groups" {
+  description = "Node Groups for the EKS cluster"
+  type        = map(any)
+  default     = {}
+}
+
+variable "node_group_iam_role_arn" {
+  description = "Existing IAM role ARN for the Node groups"
+  type        = string
+  default     = null
+}
+
+variable "node_additional_security_group_ids" {
+  description = "List of additional security group ids to add to the node security group created"
+  type        = list(string)
+  default     = []
 }
