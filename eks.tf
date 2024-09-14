@@ -41,7 +41,25 @@ module "eks" {
   create_node_security_group           = true
   node_security_group_additional_rules = var.node_security_group_additional_rules
 
-  cluster_security_group_additional_rules = var.cluster_security_group_additional_rules
+  cluster_security_group_additional_rules = merge(
+    {
+      eks_cluster = {
+        description       = "Allow pods to communicate with the EKS cluster API Server"
+        from_port         = 443
+        to_port           = 443
+        protocol          = "tcp"
+        security_group_id = module.eks.cluster_security_group_id
+      },
+      k8s_api_to_current_vpc = {
+        description       = "Allow the EKS cluster to communicate with the worker nodes"
+        from_port         = 443
+        to_port           = 443
+        protocol          = "ingress"
+        security_group_id = [data.aws_vpc.vpc.cidr_block]
+      },
+    },
+    var.cluster_security_group_additional_rules
+  )
 
   cluster_endpoint_public_access       = var.cluster.endpoint_public_access || true
   cluster_endpoint_public_access_cidrs = var.endpoint_public_access_cidrs || ["0.0.0.0/0"]
