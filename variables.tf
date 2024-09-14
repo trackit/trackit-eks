@@ -49,6 +49,11 @@ variable "aws_region_short" {
   type        = string
 }
 
+variable "aws_region" {
+  description = "AWS region name"
+  type        = string
+}
+
 variable "kms_key_administrators" {
   description = "KMS key administrators"
   type        = list(string)
