@@ -1,20 +1,6 @@
-module "iam" {
-  source = "./modules/iam"
-
-  cluster_name = var.cluster.name
-
-  aws_region_short = var.aws_region_short
-
-  create_node_group_iam_role = false
-
-  kms_key_administrators = var.kms_key_administrators
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.20.0"
-
-  # create = var.create
 
   node_security_group_use_name_prefix    = true
   cluster_security_group_use_name_prefix = true
