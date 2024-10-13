@@ -176,3 +176,109 @@ variable "node_additional_security_group_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "tags" {
+  description = "Common tags to apply to all resources"
+  type = object({
+    Environment : string
+    service : string
+    component : string
+  })
+}
+
+variable "service" {
+  description = "Service using this module"
+  type        = string
+}
+
+################################################################################
+# EBS CSI native addon
+################################################################################
+
+variable "enable_ebs_csi" {
+  description = "Determines whether to enable EBS CSI EKS native addon"
+  type        = bool
+  default     = false
+}
+
+variable "ebs_csi" {
+  description = "EBS CNI native add-on configuration values"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# Fargate addon
+################################################################################
+
+variable "enable_fargate" {
+  description = "Determines whether to enable fargate"
+  type        = bool
+  default     = true
+}
+
+variable "fargate" {
+  description = "Fargate configuration values"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# External DNS addon
+################################################################################
+
+variable "enable_external_dns" {
+  description = "Determines whether to enable External DNS addon"
+  type        = bool
+  default     = true
+}
+
+variable "external_dns" {
+  description = "external-dns add-on configuration values"
+  type        = any
+  default     = {}
+}
+
+variable "enable_external_dns_sd" {
+  description = "Determines whether to enable External DNS addon with AWS Service Discovery"
+  type        = bool
+  default     = false
+}
+
+variable "external_dns_sd" {
+  description = "External-dns add-on with AWS Service Discovery configuration values"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# External Secrets addon
+################################################################################
+
+variable "enable_external_secrets" {
+  description = "Determines whether to enable External Secret addon"
+  type        = bool
+  default     = true
+}
+
+variable "external_secrets" {
+  description = "External Secrets add-on configuration values"
+  type        = any
+  default     = {}
+}
+
+################################################################################
+# AWS Load Balancer controller addon
+################################################################################
+
+variable "enable_aws_load_balancer_controller" {
+  description = "Determines whether to enable AWS Load Balancer controller addon"
+  type        = bool
+  default     = true
+}
+
+variable "aws_load_balancer_controller" {
+  description = "AWS Load Balancer Controller add-on configuration values"
+  type        = any
+  default     = {}
+}

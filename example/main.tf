@@ -1,34 +1,49 @@
+locals {
+  service = "infra"
+}
+
+data "aws_caller_identity" "current" {}
+
 module "eks" {
-  source = "./../"
+  source = "../"
 
+  aws_region       = var.aws_region
   aws_region_short = var.aws_region_short
-
-  network = {
-    vpc_id                   = local.vpc_id
-    subnet_ids               = var.vpc.subnet_ids
-    control_plane_subnet_ids = var.vpc.subnet_ids
-  }
+  env              = var.tags.env
 
   cluster = {
-    version                = "1.29"
-    name                   = var.cluster_name
-    endpoint_public_access = false
+    name                         = var.cluster_name
+    version                      = "1.30"
+    endpoint_public_access       = true
+    endpoint_public_access_cidrs = []
   }
 
-  kms_key_administrators = [
-    "arn:aws:iam::XXXXXXXX:user/trackit-eks",
-  ]
+  network = {
+    vpc_id                   = var.vpc.id
+    subnet_ids               = var.vpc.private_subnets
+    control_plane_subnet_ids = var.vpc.private_subnets
+  }
+
+  auth = {
+    admin_role_arns        = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/eks-admin"]
+    kms_key_administrators = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  }
 
   ecr_token = {
-    password  = data.aws_ecrpublic_authorization_token.token.password
-    user_name = data.aws_ecrpublic_authorization_token.token.user_name
+    user_name = "terraform"
+    password  = "password"
   }
 
-  env       = "staging"
-  zone_name = "XXXX.tech"
+  kms_key_administrators = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  aws_auth_role_arns     = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/eks-admin"]
+
+  service = abs(local.service)
+
+  zone_name = "stg.anidn.fr"
 
   tags = var.tags
 }
+
 
 resource "kubectl_manifest" "karpenter_node_class" {
   yaml_body = <<-YAML
