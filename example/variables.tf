@@ -1,6 +1,7 @@
 variable "vpc" {
   description = "The VPC custom configuration"
   type = object({
+    id                 = string
     name               = string
     cidr               = string
     azs                = list(string)

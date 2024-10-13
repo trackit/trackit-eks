@@ -1,24 +1,24 @@
-output "cluster_iam_role_arn" {
-  description = "Cluster IAM role ARN"
-  value       = aws_iam_role.cluster.arn
+output "vpc_cni_iam_role_arn" {
+  description = "ARN of IAM role for VPC CNI"
+  value       = module.vpc_cni_irsa[0].iam_role_arn
 }
 
-output "node_group_iam_role_arn" {
-  description = "Node Group IAM role ARN"
-  value       = var.create_node_group_iam_role ? aws_iam_role.node_group[0].arn : null
+output "vpc_cni_service_account_name" {
+  description = "Account name of IAM role for VPC CNI"
+  value       = "${local.role_name}-vpc-cni"
 }
 
-output "kms_key_arn" {
-  description = "The Amazon Resource Name (ARN) of the key"
-  value       = var.create_encryption_kms_key ? module.kms.key_arn : null
+output "iam_namespace" {
+  description = "Namespace for VPC CNI"
+  value       = "kube-system"
 }
 
-output "kms_key_id" {
-  description = "The globally unique identifier for the key"
-  value       = var.create_encryption_kms_key ? module.kms.key_id : null
+output "ebs_csi_iam_role_arn" {
+  description = "ARN of IAM role for EBS CSI"
+  value       = module.ebs_csi_irsa[0].iam_role_arn
 }
 
-output "kms_key_policy" {
-  description = "The IAM resource policy set on the key"
-  value       = var.create_encryption_kms_key ? module.kms.key_policy : null
+output "ebs_csi_service_account_name" {
+  description = "Account name of IAM role for EBS CSI"
+  value       = "ebs-csi-controller-sa"
 }
